@@ -21,79 +21,96 @@ function getHumanChoice()
     return humanChoice;
 }
 
-function playGame()
+function playRound(event)
 {
-    let humanScore = 0;
-    let computerScore = 0;
+    if (winnerExists) return;
 
-    function playRound(humanChoice, computerChoice)
+    const winnerDiv = document.querySelector(".winner");
+    const humanChoice = event.target.textContent.toLowerCase();
+    const computerChoice = getComputerChoice();
+
+    if (humanChoice !== computerChoice)
     {
-        humanChoice = humanChoice.toLowerCase();
-        if (humanChoice !== computerChoice)
+        if (humanChoice === "paper")
         {
-            if (humanChoice === "paper")
+            if (computerChoice === "rock")
             {
-                if (computerChoice === "rock")
-                {
-                    console.log("You win this turn");
-                    humanScore++;
-                }
-                else if (computerChoice === "scissors")
-                {
-                    console.log("You lose this turn");
-                    computerScore++;
-                }
+                winnerDiv.textContent = "You win this turn";
+                humanScore++;
             }
-            else if (humanChoice === "rock")
+            else if (computerChoice === "scissors")
             {
-                if (computerChoice === "scissors")
-                {
-                    console.log("You win this turn");
-                    humanScore++;
-                }
-                else if (computerChoice === "paper")
-                {
-                    console.log("You lose this turn");
-                    computerScore++;
-                }
-            
-            }
-            else if (humanChoice === "scissors")
-            {
-                if (computerChoice === "paper")
-                {
-                    console.log("You win this turn");
-                    humanScore++;
-                }
-                else if (computerChoice === "rock")
-                {
-                    console.log("You lose this turn");
-                    computerScore++;
-                }
+                winnerDiv.textContent = "You lose this turn";
+                computerScore++;
             }
         }
-        else
+        else if (humanChoice === "rock")
         {
-            console.log("It's a draw this turn");
+            if (computerChoice === "scissors")
+            {
+                winnerDiv.textContent = "You win this turn";
+                humanScore++;
+            }
+            else if (computerChoice === "paper")
+            {
+                winnerDiv.textContent = "You lose this turn";
+                computerScore++;
+            }
+        
         }
-    }
-
-    let humanSelection = getHumanChoice();
-    let computerSelection = getComputerChoice();
-    playRound(humanSelection, computerSelection);
-    
-    if (humanScore > computerScore)
-    {
-        console.log("You win!")
-    }
-    else if (humanScore == computerScore)
-    {
-        console.log("It's a tie.");
+        else if (humanChoice === "scissors")
+        {
+            if (computerChoice === "paper")
+            {
+                winnerDiv.textContent = "You win this turn";
+                humanScore++;
+            }
+            else if (computerChoice === "rock")
+            {
+                winnerDiv.textContent = "You lose this turn";
+                computerScore++;
+            }
+        }
     }
     else
-    {   
-        console.log("You lose.")
+    {
+        winnerDiv.textContent = "It's a draw this turn";
     }
+
+    checkWinner();
+    updateScore();
+}
+let humanScore = 0;
+let computerScore = 0;
+let winnerExists = false;
+function checkWinner()
+{
+    const winnerDiv = document.querySelector(".winner");
+    if (humanScore == 5 || computerScore == 5)
+    {
+        winnerExists = true;
+        if (humanScore == 5)
+        {
+            winnerDiv.textContent = "You won the game."
+        }
+        else if (computerScore == 5)
+        {
+            winnerDiv.textContent = "You lost the game.";
+        }
+    }
+    
 }
 
-playGame();
+function updateScore()
+{
+    const scoreDiv = document.querySelector(".score");
+    scoreDiv.textContent = `Human: ${humanScore}, Computer ${computerScore}`;
+}
+
+const paperButton = document.querySelector(".paper");
+const scissorsButton = document.querySelector(".scissors");
+const rockButton = document.querySelector(".rock");
+
+paperButton.addEventListener("click", playRound);
+scissorsButton.addEventListener("click", playRound);
+rockButton.addEventListener("click", playRound);
